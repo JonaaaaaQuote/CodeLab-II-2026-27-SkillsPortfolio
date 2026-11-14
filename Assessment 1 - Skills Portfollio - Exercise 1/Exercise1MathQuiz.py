@@ -154,6 +154,9 @@ def questiongen():
 def checkanswer():
     global score, attempt
 
+    if entry["state"] == "disabled":
+        return
+
     try:
         user_answer = int(entry.get())
     except ValueError:
@@ -166,7 +169,14 @@ def checkanswer():
             score = score + fpoints
         else:
             score = score + spoints
-        questiongen()
+
+# Green text when correct answer is given
+        correct = tk.Label(root, text="Correct!", font=("Segoe UI", 20, "bold"),
+                           bg="#1e1e2e", fg="#00ff00")
+        correct.place(relx=0.5, rely=0.7, anchor="center")
+
+        entry.config(state="disabled")
+        root.after(1000, lambda: nextquestion(correct))
 
     elif attempt == 1:
         feedback.config(text="Try again")
@@ -174,6 +184,14 @@ def checkanswer():
         entry.delete(0, tk.END)
     else:
         questiongen()
+
+# function to move to the next question after a correct answer is given
+
+
+def nextquestion(correct):
+    correct.destroy()
+    entry.config(state="normal")
+    questiongen()
 
 
 def results():
