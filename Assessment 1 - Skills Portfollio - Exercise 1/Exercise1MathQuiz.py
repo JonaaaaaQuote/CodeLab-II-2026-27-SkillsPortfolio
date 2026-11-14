@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import *
+import random
 
 root = tk.Tk()
 
@@ -116,6 +117,8 @@ def startquiz(min_num, max_num):
                         bg="#1e1e2e", fg="#f5f5f5")
     feedback.pack(pady=(10))
 
+    questiongen()
+
 # Question Formulation With List
 
 
@@ -139,44 +142,75 @@ def questiongen():
     attempt = 1
 
     info.config(
-        text=f"Question {questionno} of {totalquestions} | Score: {score}")
+        text=f"Question {questionno} of {totalquestions}  Score: {score}")
     question.config(text=f"{num1} {operation} {num2} = ?")
     feedback.config(text="")
     entry.delete(0, tk.END)
     entry.focus()
 
     # Answer Checking Function
-    def checkanswer():
-        global score, attempt
 
-        try:
-            user_answer = int(entry.get())
-        except ValueError:
-            feedback.config(text="Please enter a valid number.")
-            entry.delete(0, tk.END)
+
+def checkanswer():
+    global score, attempt
+
+    try:
+        user_answer = int(entry.get())
+    except ValueError:
+        feedback.config(text="Please enter a valid number.")
+        entry.delete(0, tk.END)
+        return
+
+    if user_answer == answer:
+        if attempt == 1:
+            score = score + fpoints
         else:
-            questiongen()
+            score = score + spoints
+        questiongen()
 
-    def results():
-        clear_screen()
+    elif attempt == 1:
+        feedback.config(text="Try again")
+        attempt = 2
+        entry.delete(0, tk.END)
+    else:
+        questiongen()
 
-        if score > 90:
-            rank = "A+ Excellent"
 
-        elif score > 80:
-            rank = "A Very Good"
+def results():
+    clear_screen()
 
-        elif score > 70:
-            rank = "B Good"
+    if score > 90:
+        rank = "A+ Excellent"
 
-        elif score > 60:
-            rank = "C Average"
+    elif score > 80:
+        rank = "A Very Good"
 
-        elif score > 50:
-            rank = "D Poor"
+    elif score > 70:
+        rank = "B Good"
 
-        elif score > 40:
-            rank = "F Fail"
+    elif score > 60:
+        rank = "C Average"
+
+    elif score > 50:
+        rank = "D Poor"
+
+    elif score > 40:
+        rank = "F Fail"
+
+    tk.Label(root, text="Quiz Completed", font=("Segoe UI", 30, "bold"),
+             bg="#1e1e2e", fg="#f5f5f5").pack(pady=(30, 20))
+
+    tk.Label(root, text=f"Score: {score}", font=("Segoe UI", 30, "bold"),
+             bg="#1e1e2e", fg="#f5f5f5").pack(pady=10)
+
+    tk.Label(root, text=f"Rank: {rank}", font=("Segoe UI", 30, "bold"),
+             bg="#1e1e2e", fg="#f5f5f5").pack(pady=10)
+
+    tk.Button(root, text="Restart Quiz", font=("Segoe UI", 20, "bold"), bg="#6d4aff",
+              fg="#f5f5f5", width=15, command=start_page).pack(pady=(20, 5))
+
+    tk.Button(root, text="Quit", font=("Segoe UI", 20, "bold"), bg="#6d4aff",
+              fg="#f5f5f5", width=15, command=root.destroy).pack(pady=(5))
 
 
 start_page()
